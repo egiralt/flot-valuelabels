@@ -62,14 +62,17 @@
 
           var x = series.data[i][0], y = series.data[i][1];
 
+		 // Changed to make differences with the 'categories' mode and to get the value from the data array
           if (categories) {
             x = series.xaxis.categories[x];
           }
+          else
+          	if (x < series.xaxis.min || x > series.xaxis.max || y < series.yaxis.min || y > series.yaxis.max)  continue;
 
-          if (x < series.xaxis.min || x > series.xaxis.max || y < series.yaxis.min || y > series.yaxis.max)  continue;
-
-          var val = ( plotAxis === 'x' ) ? x : y;
-
+          var val = ( plotAxis === 'x' ) 
+          	? (categories ? series.data[x][0] : x) //   
+          	: y;
+			
 	  if(val == null){val=''}
 	  
           if ( val === 0 && hideZero ) continue;
@@ -79,7 +82,7 @@
           }
 
           val = "" + val;
-          val = labelFormatter(val);
+          val = labelFormatter(val, i, ii, series); // Added the indexes and the series object: Jul/14/2014
 
           if (!hideSame || val != last_val || i == series.data.length - 1) {
             var xx = series.xaxis.p2c(x) + plot.getPlotOffset().left;
